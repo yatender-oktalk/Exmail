@@ -41,7 +41,7 @@ config :phoenix, :stacktrace_depth, 20
 config :exmail, Exmail.Repo,
   adapter: Ecto.Adapters.Postgres,
   username: "ok",
-  password: "maxx",
+  password: "maxx3169",
   database: "exmail_dev",
-  hostname: "localhost",
+  hostname: "yatender-new.c0nszyhy2spc.us-east-2.rds.amazonaws.com",
   pool_size: 10
