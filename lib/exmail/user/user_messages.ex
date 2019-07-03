@@ -15,38 +15,45 @@ defmodule Exmail.UserMessages.Model do
 
   def insert_user_msg(msg_body) do
     Ecto.Changeset.change(%Exmail.UserMessages.Model{}, msg_body)
-    |> Repo.insert!
+    |> Repo.insert!()
   end
 
   def mark_read(%{user_id: user_id, thread_id: thread_id}) do
-    query = from(u in Exmail.UserMessages.Model, where: u.user_id == ^user_id and u.thread_id == ^thread_id and u.status == ^1 )
+    query =
+      from(u in Exmail.UserMessages.Model,
+        where: u.user_id == ^user_id and u.thread_id == ^thread_id and u.status == ^1
+      )
+
     Exmail.Repo.update_all(query,
       set: [is_read: true]
     )
+
     {:ok, "success"}
   end
 
   def move_thread(%{user_id: user_id, thread_id: thread_id, folder: folder}) do
-    query = from(u in Exmail.UserMessages.Model, where: u.user_id == ^user_id and u.thread_id == ^thread_id)
+    query =
+      from(u in Exmail.UserMessages.Model,
+        where: u.user_id == ^user_id and u.thread_id == ^thread_id
+      )
+
     Exmail.Repo.update_all(query,
       set: [current_folder: folder]
     )
+
     {:ok, "success"}
   end
 
   def delete_thread(%{user_id: user_id, thread_id: thread_id}) do
-    query = from(u in Exmail.UserMessages.Model, where: u.user_id == ^user_id and u.thread_id == ^thread_id)
+    query =
+      from(u in Exmail.UserMessages.Model,
+        where: u.user_id == ^user_id and u.thread_id == ^thread_id
+      )
+
     Exmail.Repo.update_all(query,
       set: [status: 1, current_folder: "trash"]
     )
+
     {:ok, "success"}
   end
-
-
-
 end
-
-
-# Repo.get_by(User, email: "foobar@email.com")
-# |> change(%{email: "hello@email.com"})
-# |> Repo.update()

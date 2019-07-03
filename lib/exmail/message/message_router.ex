@@ -7,5 +7,4 @@ defmodule Exmail.Message.Router do
 
   post("/new", Controller, :create)
   post("/reply", Controller, :reply)
-
 end

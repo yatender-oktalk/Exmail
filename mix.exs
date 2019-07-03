@@ -20,7 +20,7 @@ defmodule Exmail.Mixfile do
   def application do
     [
       mod: {Exmail.Application, []},
-      extra_applications: [:logger, :runtime_tools, :tzdata, :httpoison]
+      extra_applications: [:logger, :runtime_tools, :tzdata, :httpoison, :appsignal]
     ]
   end
 
@@ -42,7 +42,8 @@ defmodule Exmail.Mixfile do
       {:plug_cowboy, "~> 1.0"},
       {:jason, "~> 1.1"},
       {:timex_ecto, "~> 3.0"},
-      {:httpoison, "~> 1.4"}
+      {:httpoison, "~> 1.4"},
+      {:appsignal, "~> 1.0"}
     ]
   end
 

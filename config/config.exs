@@ -14,6 +14,7 @@ config :exmail, ExmailWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "pUZnuwZiNYNnxSs1XGID3/L5PCWEunF/zxmX+GeeVM2RUT77U9ARSAILgIhS0Mr+",
   render_errors: [view: ExmailWeb.ErrorView, accepts: ~w(json)],
+  instrumenters: [Appsignal.Phoenix.Instrumenter],
   pubsub: [name: Exmail.PubSub,
            adapter: Phoenix.PubSub.PG2]
 
@@ -25,3 +26,5 @@ config :logger, :console,
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"
+
+import_config "appsignal.exs"

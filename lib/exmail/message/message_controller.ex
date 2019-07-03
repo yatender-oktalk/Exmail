@@ -30,8 +30,6 @@ defmodule Exmail.Message.Controller do
         {:ok, resp} -> {200, %{thread_id: resp.thread_id, msg_id: resp.id}}
         {:error, resp} -> {400, resp}
       end
-
-    IO.inspect(response, label: "*****************")
     conn
     |> put_resp_content_type("application/json")
     |> send_resp(status, Poison.encode!(%{resp: response}))

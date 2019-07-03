@@ -8,6 +8,7 @@ defmodule Exmail.Message.Model do
   alias Exmail.Message.{
     Model
   }
+
   alias Exmail.UserMessages.Model, as: UserMsgModel
 
   @primary_key {:id, :id, autogenerate: true}
@@ -41,27 +42,29 @@ defmodule Exmail.Message.Model do
   def handle_create(msg_body) do
     msg =
       case msg_body == nil do
-        true -> %{
-          "body" => "hello this is body",
-          "subject" => "this is testing subject",
-          "sender" => "yatender@getvokal.com",
-          "subject" => "this is testing subject",
-          "attachments" => [],
-          "cc" => [%{"email" => "yatender@outlook.com", "name" => "yatender"}],
-          "bcc" => [%{"email" => "jeet@gmail.com", "name" => "jeet"}],
-          "receiver" => [%{"email" => "yatender@gmail.com"}]
-        }
+        true ->
+          %{
+            "body" => "hello this is body",
+            "subject" => "this is testing subject",
+            "sender" => "yatender@getvokal.com",
+            "subject" => "this is testing subject",
+            "attachments" => [],
+            "cc" => [%{"email" => "yatender@outlook.com", "name" => "yatender"}],
+            "bcc" => [%{"email" => "jeet@gmail.com", "name" => "jeet"}],
+            "receiver" => [%{"email" => "yatender@gmail.com"}]
+          }
+
         _ ->
           msg_body
       end
 
-      attachment_keyword = user_struct(msg["attachments"])
-      cc_keyword = user_struct(msg["cc"])
-      bcc_keyword = user_struct(msg["bcc"])
-      receiver_keyword = user_struct(msg["receiver"])
+    attachment_keyword = user_struct(msg["attachments"])
+    cc_keyword = user_struct(msg["cc"])
+    bcc_keyword = user_struct(msg["bcc"])
+    receiver_keyword = user_struct(msg["receiver"])
 
     msg_keyword =
-      Keyword.new
+      Keyword.new()
       |> Keyword.put(:body, msg["body"])
       |> Keyword.put(:body_preview, String.slice(msg["body"], 0, 20))
       |> Keyword.put(:sender, msg["sender"])
@@ -82,24 +85,27 @@ defmodule Exmail.Message.Model do
       {:error, _} ->
         ""
     end
+
     insert_response
   end
 
   def handle_reply(msg_body) do
     msg =
       case msg_body == nil do
-        true -> %{
-          "body" => "hello this is body reply",
-          "subject" =>"this is testing subject",
-          "sender" => "yatender@gmail.com",
-          "attachments" => [],
-          "parent_id" =>25,
-          "type" => "reply",
-          "thread_id" => "6ba787de-23cc-4d50-87cb-651c2b36c9f1",
-          "cc" => [%{"email" => "yatender@outlook.com", "name" => "yatender"}],
-          "bcc" => [%{"email" => "jeet@gmail.com", "name"=> "yatender"}],
-          "receiver"=> [%{"email" => "yatender@getvokal.com"}]
-        }
+        true ->
+          %{
+            "body" => "hello this is body reply",
+            "subject" => "this is testing subject",
+            "sender" => "yatender@gmail.com",
+            "attachments" => [],
+            "parent_id" => 25,
+            "type" => "reply",
+            "thread_id" => "6ba787de-23cc-4d50-87cb-651c2b36c9f1",
+            "cc" => [%{"email" => "yatender@outlook.com", "name" => "yatender"}],
+            "bcc" => [%{"email" => "jeet@gmail.com", "name" => "yatender"}],
+            "receiver" => [%{"email" => "yatender@getvokal.com"}]
+          }
+
         _ ->
           msg_body
       end
@@ -110,7 +116,7 @@ defmodule Exmail.Message.Model do
     receiver_keyword = user_struct(msg["receiver"])
 
     msg_keyword =
-      Keyword.new
+      Keyword.new()
       |> Keyword.put(:body, msg["body"])
       |> Keyword.put(:body_preview, String.slice(msg["body"], 0, 20))
       |> Keyword.put(:sender, msg["sender"])
@@ -133,6 +139,7 @@ defmodule Exmail.Message.Model do
       {:error, _} ->
         ""
     end
+
     insert_response
   end
 
@@ -142,20 +149,22 @@ defmodule Exmail.Message.Model do
 
   defp parse_msg_resp(msg_body, resp) do
     cc = change_params(msg_body["cc"], resp, "received")
-    bcc =  change_params(msg_body["bcc"], resp, "received")
+    bcc = change_params(msg_body["bcc"], resp, "received")
     receiver = change_params(msg_body["receiver"], resp, "received")
     sender = change_params(msg_body["sender"], resp, "sent")
   end
 
   def change_params(msg_body, resp, type) do
-      msg_body
-      |> fetch_email
-      |> fetch_user_id
-      |> Enum.map(fn x ->
-        [type: type, user_id: x] end)
-      |> Enum.map(fn x -> x ++ [message_id: resp.id, thread_id: resp.thread_id] end)
-      |> Enum.map(fn x ->
-        UserMsgModel.insert_user_msg(x) end)
+    msg_body
+    |> fetch_email
+    |> fetch_user_id
+    |> Enum.map(fn x ->
+      [type: type, user_id: x]
+    end)
+    |> Enum.map(fn x -> x ++ [message_id: resp.id, thread_id: resp.thread_id] end)
+    |> Enum.map(fn x ->
+      UserMsgModel.insert_user_msg(x)
+    end)
   end
 
   def fetch_email([]) do
@@ -163,18 +172,16 @@ defmodule Exmail.Message.Model do
   end
 
   def fetch_email(user_list) when is_list(user_list) do
-    Enum.map(user_list, &(&1["email"]))
+    Enum.map(user_list, & &1["email"])
   end
 
-
-  def fetch_email(%{"email"=> user}) do
+  def fetch_email(%{"email" => user}) do
     [user]
   end
 
   def fetch_email(user) do
     [user]
   end
-
 
   def fetch_user_id([]) do
     []
@@ -190,6 +197,7 @@ defmodule Exmail.Message.Model do
       true ->
         # %Exmail.User.EmailUsers.Model{}
         []
+
       _ ->
         Enum.map(msg, fn user_data ->
           user = %Exmail.User.EmailUsers.Model{}
@@ -197,5 +205,4 @@ defmodule Exmail.Message.Model do
         end)
     end
   end
-
 end

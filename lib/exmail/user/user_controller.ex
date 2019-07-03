@@ -36,5 +36,4 @@ defmodule Exmail.User.Controller do
     |> put_resp_content_type("application/json")
     |> send_resp(status, Poison.encode!(%{resp: response}))
   end
-
 end

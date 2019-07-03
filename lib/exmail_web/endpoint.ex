@@ -1,5 +1,6 @@
 defmodule ExmailWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :exmail
+  use Appsignal.Phoenix
 
   socket "/socket", ExmailWeb.UserSocket
 
